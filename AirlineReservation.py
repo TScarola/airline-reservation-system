@@ -33,6 +33,7 @@ def stafflogin():
 def register():
     return render_template('register.html')
 
+#Authenticate user login
 @app.route('/userloginAuth', methods=['GET', 'POST'])
 def userloginAuth():
     username = request.form['username']
@@ -52,6 +53,7 @@ def userloginAuth():
         error = 'Invalid login information'
         return render_template('userlogin.html', error=error)
 
+#Authenticate staff login
 @app.route('/staffloginAuth', methods=['GET', 'POST'])
 def staffloginAuth():
     username = request.form['username']
