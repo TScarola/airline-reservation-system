@@ -28,10 +28,15 @@ def userlogin():
 def stafflogin():
     return render_template('stafflogin.html')
 
-#Define route for register
-@app.route('/register')
-def register():
-    return render_template('register.html')
+#Define route for registering new user
+@app.route('/userregister')
+def userregister():
+    return render_template('userregister.html')
+
+#Define route for registering new staff member
+@app.route('/staffregister')
+def staffregister():
+    return render_template('staffregister.html')
 
 #Authenticate user login
 @app.route('/userloginAuth', methods=['GET', 'POST'])
@@ -40,12 +45,13 @@ def userloginAuth():
     password = request.form['password']
 
     cursor = conn.cursor()
+    #execute SQL query
     query = 'SELECT * FROM customer WHERE email = %s AND password = %s'
     cursor.execute(query, (username, password))
     data = cursor.fetchone()
     cursor.close()
     error = None
-
+    #check if login info is in database
     if(data):
         error = 'Yeah thats right but I havent added the next step yet'
         return render_template('userlogin.html', error=error)
@@ -58,20 +64,58 @@ def userloginAuth():
 def staffloginAuth():
     username = request.form['username']
     password = request.form['password']
-
+    #execute sql query
     cursor = conn.cursor()
     query = 'SELECT * FROM staff WHERE username = %s AND password = %s'
     cursor.execute(query, (username, password))
     data = cursor.fetchone()
     cursor.close()
     error = None
-
+    #check if login info is in database
     if(data):
         error = 'Yeah thats right but I havent added the next step yet'
         return render_template('userlogin.html', error=error)
     else:
         error = 'Invalid login information'
         return render_template('userlogin.html', error=error)
+
+#Authenticate new user register
+@app.route('/userregisterAuth', methods=['GET', 'POST'])
+def userregisterAuth():
+    username = request.form['username']
+    password = request.form['password']
+
+    cursor = conn.cursor()
+    query = 'SELECT * FROM customer WHERE email = %s'
+    cursor.execute(query,(username))
+    data = cursor.fetchone()
+    error = None
+
+    if(data):
+        error = 'This user already exists'
+        return render_template('userregister.html', error = error)
+    else:
+        error = 'This isnt done yet but it will add a new user to the database'
+        return render_template('userregister.html', error = error)       
+
+#Authenticate new staff register
+@app.route('/staffregisterAuth', methods=['GET', 'POST'])
+def staffregisterAuth():
+    username = request.form['username']
+    password = request.form['password']
+
+    cursor = conn.cursor()
+    query = 'SELECT * FROM staff WHERE username = %s'
+    cursor.execute(query,(username))
+    data = cursor.fetchone()
+    error = None
+
+    if(data):
+        error = 'This staff already exists'
+        return render_template('staffregister.html', error = error)
+    else:
+        error = 'This isnt done yet but it will add a new staff to the database'
+        return render_template('staffregister.html', error = error)       
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
