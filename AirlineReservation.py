@@ -15,7 +15,7 @@ conn = pymysql.connect(host='localhost',
 
 #Define route for home page when not logged in
 @app.route('/')
-def  index():
+def home():
     return render_template('home.html')
 
 #Define route for user login
@@ -95,8 +95,13 @@ def userregisterAuth():
         error = 'This user already exists'
         return render_template('userregister.html', error = error)
     else:
-        error = 'This isnt done yet but it will add a new user to the database'
-        return render_template('userregister.html', error = error)       
+        error = 'This isnt done yet but it will add a n'
+        return render_template('userregister.html', error = error)
+#		ins = 'INSERT INTO customer VALUES(%s, %s)'
+#		cursor.execute(ins, (username, password))
+#		conn.commit()
+#		cursor.close()
+#		return render_template('home.html')      
 
 #Authenticate new staff register
 @app.route('/staffregisterAuth', methods=['GET', 'POST'])
