@@ -149,16 +149,30 @@ def staffregisterAuth():
         cursor.close()
         return render_template('home.html')
 
+#route for user home page when logged in
 @app.route('/userhome')
 def userhome():
-    username = session['username']
-    return render_template('userhome.html')
+    email = session['username']
+    cursor = conn.cursor()
+    query = 'SELECT departure_date, flight_number, airline_name FROM ticket WHERE %s = customer_email'
+    cursor.execute(query, (email))
+    flightInfo = cursor.fetchall()
+    cursor.close()
+    return render_template('userhome.html', flightInfo = flightInfo)
 
+#view user flights
+#@app.route('/userFlights')
+#def userFlights():
+    #username = session['username']
+    #return render_template('userflights.html')
+
+#route for staff home page when logged in
 @app.route('/staffhome')
 def staffhome():
     username = session['username']
     return render_template('staffhome.html')
 
+#logout
 @app.route('/logout')
 def logout():
     session.pop('username')

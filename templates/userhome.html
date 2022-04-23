@@ -2,12 +2,36 @@
 <html>
 
 <head>
-
+	<h1>This is the user homepage</h1>
 </head>
 
 <body>
-	<h1>This is the user homepage</h1>
+	<form id="search"> 
+		<input type="search" name="q" placeholder="Search Flights">
+		<button>Search</button>
+	</form>
+	<p>
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+	<table>
+		<caption>Your Flights</caption>
+		<th>Departure Date</th>
+		<th>Flight Number</th>
+		<th>Airline</th>
 
+	{% for line in flightInfo %}
+		<tr>
+			<td>{{line['departure_date']}}</td>
+			<td>{{line['flight_number']}}</td>
+			<td>{{line['airline_name']}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+
+	<p>
 	<a href="/logout">Logout</a>
 </body>
 
