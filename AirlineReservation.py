@@ -52,10 +52,11 @@ def userloginAuth():
     cursor.close()
     error = None
     #check if login info is in database
-    if(data):
-        error = 'Yeah thats right but I havent added the next step yet'
-        return render_template('userlogin.html', error=error)
-    else:
+    if(data): 
+        #start new user session if it is
+        session['username'] = username
+        return redirect(url_for('userhome'))
+    else: #raise error otherwise
         error = 'Invalid login information'
         return render_template('userlogin.html', error=error)
 
@@ -73,35 +74,50 @@ def staffloginAuth():
     error = None
     #check if login info is in database
     if(data):
-        error = 'Yeah thats right but I havent added the next step yet'
-        return render_template('userlogin.html', error=error)
+        #start new staff session if it is
+        session['username'] = username
+        return redirect(url_for('staffhome'))
     else:
+        #raise error otherwise
         error = 'Invalid login information'
-        return render_template('userlogin.html', error=error)
+        return render_template('stafflogin.html', error=error)
 
 #Authenticate new user register
 @app.route('/userregisterAuth', methods=['GET', 'POST'])
 def userregisterAuth():
-    username = request.form['username']
+    #get all user information
+    email = request.form['username']
     password = request.form['password']
+    name = request.form['name']
+    phone_number = request.form['phone_number']
+    date_of_birth = request.form['date_of_birth']
+    city = request.form['city']
+    state = request.form['state']
+    building_number = request.form['building_number']
+    street = request.form['street']
+    passport_country = request.form['passport_country']
+    passport_number = request.form['passport_number']
+    passport_expiration = request.form['passport_expiration']
 
+    #get user email from sql query
     cursor = conn.cursor()
     query = 'SELECT * FROM customer WHERE email = %s'
-    cursor.execute(query,(username))
+    cursor.execute(query,(email))
     data = cursor.fetchone()
     error = None
 
+    #check if email is already in use
     if(data):
         error = 'This user already exists'
         return render_template('userregister.html', error = error)
     else:
-        error = 'This isnt done yet but it will add a new user'
-        return render_template('userregister.html', error = error)
-#		ins = 'INSERT INTO customer VALUES(%s, %s)'
-#		cursor.execute(ins, (username, password))
-#		conn.commit()
-#		cursor.close()
-#		return render_template('home.html')      
+        #error = 'This isnt done yet but it will add a new user'
+        #return render_template('userregister.html', error = error)
+        ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (email, password, name, building_number, street, city, state, phone_number, date_of_birth, passport_country, passport_expiration, passport_number))
+        conn.commit()
+        cursor.close()
+        return render_template('home.html')
 
 #Authenticate new staff register
 @app.route('/staffregisterAuth', methods=['GET', 'POST'])
@@ -121,6 +137,21 @@ def staffregisterAuth():
     else:
         error = 'This isnt done yet but it will add a new staff to the database'
         return render_template('staffregister.html', error = error)       
+
+@app.route('/userhome')
+def userhome():
+    username = session['username']
+    return render_template('userhome.html')
+
+@app.route('/staffhome')
+def staffhome():
+    username = session['username']
+    return render_template('staffhome.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect('/')
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000
