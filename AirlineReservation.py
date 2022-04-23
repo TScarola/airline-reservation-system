@@ -111,8 +111,7 @@ def userregisterAuth():
         error = 'This user already exists'
         return render_template('userregister.html', error = error)
     else:
-        #error = 'This isnt done yet but it will add a new user'
-        #return render_template('userregister.html', error = error)
+        #add to database
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, password, name, building_number, street, city, state, phone_number, date_of_birth, passport_country, passport_expiration, passport_number))
         conn.commit()
@@ -122,21 +121,33 @@ def userregisterAuth():
 #Authenticate new staff register
 @app.route('/staffregisterAuth', methods=['GET', 'POST'])
 def staffregisterAuth():
+    #get all information
     username = request.form['username']
     password = request.form['password']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    date_of_birth = request.form['date_of_birth']
+    phone_number = request.form['phone_number']
+    airline_name = request.form['airline_name']
 
+    #get staff username 
     cursor = conn.cursor()
     query = 'SELECT * FROM staff WHERE username = %s'
     cursor.execute(query,(username))
     data = cursor.fetchone()
     error = None
 
+    #check if the username is in use
     if(data):
         error = 'This staff already exists'
         return render_template('staffregister.html', error = error)
     else:
-        error = 'This isnt done yet but it will add a new staff to the database'
-        return render_template('staffregister.html', error = error)       
+        #add to database
+        ins = 'INSERT INTO staff VALUES(%s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (username, airline_name, password, first_name, last_name, date_of_birth, phone_number))
+        conn.commit()
+        cursor.close()
+        return render_template('home.html')
 
 @app.route('/userhome')
 def userhome():
