@@ -2,13 +2,26 @@
 <head>
 </head>
 <body>
+	<h1>New User Registration</h1>
 <form action="/userregisterAuth" method="POST">
 	<input type="text" name = "username" placeholder="email" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
 	<p></p>
-	<input type="text" name = "name" placeholder="name" required/> </br>
-	<input type="text" name = "username" placeholder="email" required/> </br>
-
+	<input type="text" name = "name" placeholder="full name" required/> </br>
+	<input type="text" name = "phone_number" placeholder="phone number" required/> </br>
+	<input type="text" name = "date_of_birth" placeholder="date of birth" required/> </br>
+	<p></p>
+	<label>Address Information</label><br>
+	<input type="text" name = "city" placeholder="city" required/>
+	<input type="text" name = "state" placeholder="state" required/> </br>
+	<input type="text" name = "building_number" placeholder="building number" required/>
+	<input type="text" name = "street" placeholder="street" required/> </br>
+	<p></p>
+	<label>Passport Information</label><br>
+	<input type="text" name = "passport_country" placeholder="passport country" required/></br>
+	<input type="text" name = "passport_number" placeholder="passport number" required/></br>
+	<input type="text" name = "passport_expiration" placeholder="passport expiration" required/></br>
+	<p></p>
 	<input type="submit" value = Register />
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>

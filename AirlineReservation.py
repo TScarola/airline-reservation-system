@@ -95,7 +95,7 @@ def userregisterAuth():
         error = 'This user already exists'
         return render_template('userregister.html', error = error)
     else:
-        error = 'This isnt done yet but it will add a n'
+        error = 'This isnt done yet but it will add a new user'
         return render_template('userregister.html', error = error)
 #		ins = 'INSERT INTO customer VALUES(%s, %s)'
 #		cursor.execute(ins, (username, password))

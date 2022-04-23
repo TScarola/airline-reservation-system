@@ -2,9 +2,17 @@
 <head>
 </head>
 <body>
+	<h1>New Staff Registration</h1>
 <form action="/staffregisterAuth" method="POST">
 	<input type="text" name = "username" placeholder="username" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
+	<p></p>
+	<input type="text" name = "first_name" placeholder="first name" required/> </br>
+	<input type="text" name = "last_name" placeholder="last name" required/> </br>
+	<input type="text" name = "date_of_birth" placeholder="date of birth" required/> </br>
+	<input type="text" name = "phone_number" placeholder="phone number" required/> </br>
+	<input type="text" name = "airline_name" placeholder="airline name" required/> </br>
+	<p></p>
 	<input type="submit" value = Register />
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
