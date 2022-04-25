@@ -169,10 +169,39 @@ def staffhome():
     #query = 'SELECT '
     return render_template('staffhome.html')
 
-#staff member create new flight
+#staff member create new flight page
 @app.route('/createflight')
 def createflight():
     return render_template('createflight.html')
+
+@app.route('/createflightAuth', methods=['GET', 'POST'])
+def createflightAuth():
+    #get all info
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    departure_date = request.form['departure_date']
+    arrival_date = request.form['arrival_date']
+    departure_airport = request.form['departure_airport']
+    arrival_airport = request.form['arrival_airport']
+    base_price = request.form['base_price']
+    plane_id = request.form['plane_id']
+    status = request.form['status']
+
+    #execute sql
+    cursor = conn.cursor()
+    #get airline name, flight number, departure datetime
+    query = 'SELECT * FROM flight WHERE departure_date = %s AND airline_name = %s AND number = %s'
+    cursor.execute(query, (departure_date, airline_name, flight_number))
+    data = cursor.fetchall()
+    error = None
+
+    #check if flight is already in system
+    if (data):
+        error = 'This flight already exists'
+        return render_template('createflight.html', error=error)
+    else:
+        error = 'insert info into database'
+        return render_template('createflight.html', error=error)
 
 #logout
 @app.route('/logout')
