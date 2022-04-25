@@ -160,17 +160,19 @@ def userhome():
     cursor.close()
     return render_template('userhome.html', flightInfo = flightInfo)
 
-#view user flights
-#@app.route('/userFlights')
-#def userFlights():
-    #username = session['username']
-    #return render_template('userflights.html')
 
 #route for staff home page when logged in
 @app.route('/staffhome')
 def staffhome():
     username = session['username']
+    #cursor = conn.cursor()
+    #query = 'SELECT '
     return render_template('staffhome.html')
+
+#staff member create new flight
+@app.route('/createflight')
+def createflight():
+    return render_template('createflight.html')
 
 #logout
 @app.route('/logout')
