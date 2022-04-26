@@ -5,20 +5,21 @@
 	<h1>Create a New Flight</h1>
 <form action="/createflightAuth" method="POST">
 	<input type="text" name = "airline_name" placeholder="airline name" required/> </br>
-	<input type="text" name = "flight_number" placeholder="flight number" required/></br>
+	<input type="number" name = "flight_number" placeholder="flight number" required/></br>
 	
 	<label for = "departure_date">Departure date</label>
 	<input type="datetime-local" name = "departure_date" required/></br>
 	<label for = "arrival_date">Arrival date</label>
 	<input type="datetime-local" name = "arrival_date" required/></br>
 
-	<input type="text" name = "departure_airport" placeholder="departure airport" required/></br>
-	<input type="text" name = "arrival_airport" placeholder="arrival airport" required/></br>
-	<input type="text" name = "base_price" placeholder="base price" required/></br>
+	<input minlength="3" maxlength="3" type="text" name = "departure_airport" placeholder="departure airport" required/></br>
+	<input minlength="3" maxlength="3" type="text" name = "arrival_airport" placeholder="arrival airport" required/></br>
+	<input type="number" name = "base_price" placeholder="base price" required/></br>
 	<input type="text" name = "plane_id" placeholder="plane id" required/></br>
 	<input type="text" name = "status" placeholder="status" required/></br>
 	<p></p>
 	<input type="submit" value = Create />
+	<input type="reset">
 	{% if error %}
 		<p class="error"><strong>Error:</strong> {{error}}</p>
 	{% endif %}

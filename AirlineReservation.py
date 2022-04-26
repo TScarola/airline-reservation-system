@@ -200,8 +200,70 @@ def createflightAuth():
         error = 'This flight already exists'
         return render_template('createflight.html', error=error)
     else:
-        error = 'insert info into database'
-        return render_template('createflight.html', error=error)
+        ins = 'INSERT INTO flight VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (departure_date, flight_number, airline_name, departure_airport, arrival_airport, arrival_date, base_price, plane_id, status))
+        conn.commit()
+        cursor.close()
+        return render_template('staffhome.html')
+
+#staff member change status of a flight
+@app.route('/changestatus')
+def changestatus():
+    return render_template('changestatus.html')
+
+@app.route('/changestatusAuth', methods=['GET', 'POST'])
+def changestatusAuth():
+    #get important flight info
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    departure_date = request.form['departure_date']
+    new_status = request.form['status']
+    #execute sql
+    cursor = conn.cursor()
+    query = 'SELECT * FROM flight WHERE departure_date = %s AND airline_name = %s AND number = %s'
+    cursor.execute(query, (departure_date, airline_name, flight_number))
+    data = cursor.fetchall()
+    error = None
+    #check if flight is in system
+    if (data):
+        upd = 'UPDATE flight SET status = %s WHERE departure_date = %s AND airline_name = %s AND number = %s'
+        cursor.execute(upd, (new_status, departure_date, airline_name, flight_number))
+        conn.commit()
+        cursor.close()
+        return render_template('staffhome.html')
+    else:
+        error = 'This flight is not in the system'
+        return render_template('changestatus.html', error=error)
+
+#staff member add new airport page
+@app.route('/addairport')
+def addairport():
+    return render_template('addairport.html')
+
+@app.route('/addairportAuth', methods=['GET', 'POST'])
+def addairportAuth():
+    #get all info
+    code = request.form['code']
+    name = request.form['name']
+    city = request.form['city']
+    country = request.form['country']
+    ap_type = request.form['type']
+    #execute sql
+    cursor = conn.cursor()
+    query = 'SELECT code FROM airport WHERE code = %s'
+    cursor.execute(query, (code))
+    data = cursor.fetchone()
+    error = None
+    #check if airport is already in system
+    if (data):
+        error = 'This airport already exists'
+        return render_template('addairport.html')
+    else:
+        ins = 'INSERT INTO airport VALUES(%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (code, name, city, country, ap_type))
+        conn.commit()
+        cursor.close()
+        return render_template('staffhome.html')
 
 #logout
 @app.route('/logout')

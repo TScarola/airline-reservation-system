@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+<body>
+	<h1>Change Flight Status</h1>
+<form action="/changestatusAuth" method="POST">
+	<input type="text" name = "airline_name" placeholder="airline name" required/> </br>
+	<input type="number" name = "flight_number" placeholder="flight number" required/></br>
+	<label for = "departure_date">Departure date</label>
+	<input type="datetime-local" name = "departure_date" required/></br>
+	<p></p>
+	<label>Select New Flight Status</label></br>
+	<label for="on_time">On Time</label>
+	<input type="radio" name = "status" id="on_time" value="On Time" required/></br>
+	<label for="delayed">Delayed</label>
+	<input type="radio" name = "status" id="delayed" value="Delayed" required/></br>
+	<label for="cancelled">Cancelled</label>
+	<input type="radio" name = "status" id="cancelled" value="Cancelled" required/></br>
+	<p></p>
+	<input type="submit" value = Change />
+	<input type="reset">
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<a href="/staffhome">Go back</a>
+
+</body>
+
+
+</html>
