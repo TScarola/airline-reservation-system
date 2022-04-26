@@ -16,7 +16,13 @@
 	<input minlength="3" maxlength="3" type="text" name = "arrival_airport" placeholder="arrival airport" required/></br>
 	<input type="number" name = "base_price" placeholder="base price" required/></br>
 	<input type="text" name = "plane_id" placeholder="plane id" required/></br>
-	<input type="text" name = "status" placeholder="status" required/></br>
+	<label>Select Flight Status</label></br>
+	<label for="on_time">On Time</label>
+	<input type="radio" name = "status" id="on_time" value="On Time" required/></br>
+	<label for="delayed">Delayed</label>
+	<input type="radio" name = "status" id="delayed" value="Delayed" required/></br>
+	<label for="cancelled">Cancelled</label>
+	<input type="radio" name = "status" id="cancelled" value="Cancelled" required/></br>
 	<p></p>
 	<input type="submit" value = Create />
 	<input type="reset">

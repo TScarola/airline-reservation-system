@@ -4,18 +4,18 @@
 <body>
 	<h1>New User Registration</h1>
 <form action="/userregisterAuth" method="POST">
-	<input type="text" name = "username" placeholder="email" required/> </br>
+	<input type="email" name = "username" placeholder="email" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
 	<p></p>
 	<input type="text" name = "name" placeholder="full name" required/> </br>
-	<input type="text" name = "phone_number" placeholder="phone number" required/> </br>
+	<input type="tel" name = "phone_number" placeholder="phone number" pattern="[0-9]{10}" required/> </br>
 	<label for = "date_of_birth">Date of Birth</label>
 	<input type="date" name = "date_of_birth" required/> </br>
 	<p></p>
 	<label>Address Information</label><br>
 	<input type="text" name = "city" placeholder="city" required/>
 	<input type="text" name = "state" placeholder="state" required/> </br>
-	<input type="text" name = "building_number" placeholder="building number" required/>
+	<input type="number" name = "building_number" placeholder="building number" required/>
 	<input type="text" name = "street" placeholder="street" required/> </br>
 	<p></p>
 	<label>Passport Information</label><br>
