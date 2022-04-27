@@ -6,11 +6,22 @@
 </head>
 
 <body>
-	<form id="search"> 
+	<form id="search" method="post"> 
 		<input type="search" name="q" placeholder="Search Flights">
-		<button>Search</button>
+		<button type="Submit">Search</button>
 	</form>
-	<p>
+	<p></p>
+
+	{% for line in data %}
+		{% for item in line %}
+			<tr>
+				<td>{{item}}</td>
+			</tr>
+		{% endfor %}
+	</br>
+	{% endfor %}
+
+	<p></p>
 	<style type="text/css">
 		table, th, td{
 			border: 1px solid black;

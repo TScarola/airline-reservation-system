@@ -150,13 +150,20 @@ def staffregisterAuth():
         return render_template('home.html')
 
 #route for user home page when logged in
-@app.route('/userhome')
+@app.route('/userhome', methods=['GET', 'POST'])
 def userhome():
     email = session['username']
     cursor = conn.cursor()
     query = 'SELECT departure_date, flight_number, airline_name FROM ticket WHERE %s = customer_email'
     cursor.execute(query, (email))
     flightInfo = cursor.fetchall()
+    if request.method == "POST":
+        flight = request.form['q']
+        search = 'SELECT * FROM flight WHERE departure_airport = %s OR arrival_airport = %s'
+        cursor.execute(search, (flight, flight))
+        conn.commit()
+        data = cursor.fetchall()
+        return render_template('userhome.html', flightInfo=flightInfo, data=data)
     cursor.close()
     return render_template('userhome.html', flightInfo = flightInfo)
 
