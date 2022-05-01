@@ -1,0 +1,92 @@
+<html>
+<head>
+</head>
+<body>
+	<h1>Search for Flights</h1>
+<form id="search" method="POST"> 
+	<input type="search" name="q" placeholder="Search Flights">
+	<button type="Submit">Search</button>
+</form>
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+<table>
+	<caption>Search Results</caption>
+	<th>Airline</th>
+	<th>Flight Number</th>
+	<th>Departure Airport</th>
+	<th>Arrival Airport</th>
+	<th>Departure Date</th>
+	<th>Arrival Date</th>
+	<th>Price</th>
+
+{% for line in data %}
+	<tr>
+		<td>{{line['airline_name']}}</td>
+		<td>{{line['number']}}</td>
+		<td>{{line['departure_airport']}}</td>
+		<td>{{line['arrival_airport']}}</td>
+		<td>{{line['departure_date']}}</td>
+		<td>{{line['arrival_date']}}</td>
+		<td>{{line['base_price']}}</td>
+	</tr>
+		
+</br>
+{% endfor %}
+</table>
+<p></p>
+	<h1>Purchase Tickets</h1>
+	<h4>Be sure that all data aligns with the flight listed in your search</h4>
+<p></p>
+<form action="/purchaseAuth" method="POST">
+	<input type="email" name = "customer_email" placeholder="email" required/></br>
+	<input type="text" name = "airline_name" placeholder="airline name" required/></br>
+	<input type="number" name = "flight_number" placeholder="flight number" required/></br>
+	<label for="departure_date">Departure Date</label>
+	<input type="datetime-local" name = "departure_date" required/></br>
+	<p></p>
+	<label for="class">Class:</label></br>
+
+	<label for="first">First Class</label>
+	<input type="radio" name = "class" id="first" value="First" required/></br>
+	<label for="business">Business Class</label>
+	<input type="radio" name = "class" id="business" value="Business" required/></br>
+	<label for="economy">Economy Class</label>
+	<input type="radio" name = "class" id="economy" value="Economy" required/></br>
+	<p></p>
+	<input type="number" step=".01" min="0" name="price" placeholder="ticket price" required/></br>
+	<p></p>
+	<label>Card Information</label></br>
+	<input type="text" name = "card_number" placeholder="card number" required/></br>
+	<label for="departure_date">Expiration Date</label>
+	<input type="date" name = "card_expiration" required/></br>
+
+	<label for="credit">Credit</label>
+	<input type="radio" name = "card_type" id="credit" value="Credit" required/></br>
+	<label for="debit">Debit</label>
+	<input type="radio" name = "card_type" id="debit" value="Debit" required/></br>
+	<p></p>
+	<input type="submit" value = Purchase />
+	<input type="reset">	
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+<p></p>
+<a href="/userhome">Go back</a>
+
+</body>
+
+
+</html>

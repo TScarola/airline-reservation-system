@@ -6,22 +6,6 @@
 </head>
 
 <body>
-	<form id="search" method="post"> 
-		<input type="search" name="q" placeholder="Search Flights">
-		<button type="Submit">Search</button>
-	</form>
-	<p></p>
-
-	{% for line in data %}
-		{% for item in line %}
-			<tr>
-				<td>{{item}}</td>
-			</tr>
-		{% endfor %}
-	</br>
-	{% endfor %}
-
-	<p></p>
 	<style type="text/css">
 		table, th, td{
 			border: 1px solid black;
@@ -29,20 +13,37 @@
 	</style>
 	<table>
 		<caption>Your Flights</caption>
+		<th>Ticket ID</th>
 		<th>Departure Date</th>
 		<th>Flight Number</th>
 		<th>Airline</th>
 
 	{% for line in flightInfo %}
 		<tr>
+			<td>{{line['id']}}</td>
 			<td>{{line['departure_date']}}</td>
 			<td>{{line['flight_number']}}</td>
 			<td>{{line['airline_name']}}</td>
+			<form id="drop" method="POST">
+				<td><input type="submit" name="cancelflight" value="Cancel Flight"></td>
+				<input type="hidden" name="dropid" value="{{line['id']}}">
+				{% if error %}
+					<p class="error"><strong>Error:</strong> {{error}}</p>
+				{% endif %}
+			</form>
 		</tr>
 	{% endfor %}
 	</table>
 
-	<p>
+	
+
+	<p></p>
+	<a href="/searchpurchase">Search for Flights and Purchase Tickets</a>
+	<p></p>
+	<a href="">Rate and Comment on Previous Flights</a>
+	<p></p>
+	<a href="/trackspending">Track My Spending</a>
+	<p></p>
 	<a href="/logout">Logout</a>
 </body>
 

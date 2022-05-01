@@ -1,6 +1,8 @@
 #Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, flash, render_template, request, session, url_for, redirect
 import pymysql.cursors
+import datetime
+import random
 
 #Initialize the app from Flask
 app = Flask(__name__)
@@ -154,19 +156,85 @@ def staffregisterAuth():
 def userhome():
     email = session['username']
     cursor = conn.cursor()
-    query = 'SELECT departure_date, flight_number, airline_name FROM ticket WHERE %s = customer_email'
+    query = 'SELECT * FROM ticket WHERE %s = customer_email AND departure_date > CURRENT_DATE'
     cursor.execute(query, (email))
+    conn.commit()
     flightInfo = cursor.fetchall()
+    error=None
+    if request.method == 'POST':
+        if request.form['cancelflight'] == 'Cancel Flight':
+            dropid = request.form['dropid']
+            drop = 'DELETE FROM ticket WHERE id = %s AND departure_date > (SELECT ADDDATE(CURRENT_DATE, 1) AS DateAdd)'
+            cursor.execute(drop, (dropid))
+            conn.commit()
+            cursor.close()
+            return redirect(url_for('userhome'))
+            #error = 'Flight will be cancelled'
+            #return render_template('userhome.html', flightInfo = flightInfo, error=error)
+            #return redirect(url_for('userhome'))
+    cursor.close()
+    return render_template('userhome.html', flightInfo = flightInfo)
+
+#user search and purchase tickets
+@app.route('/searchpurchase', methods=['GET', 'POST'])
+def searchpurchase():
+    cursor = conn.cursor()
     if request.method == "POST":
         flight = request.form['q']
         search = 'SELECT * FROM flight WHERE departure_airport = %s OR arrival_airport = %s'
         cursor.execute(search, (flight, flight))
         conn.commit()
         data = cursor.fetchall()
-        return render_template('userhome.html', flightInfo=flightInfo, data=data)
+        return render_template('searchpurchase.html', data=data)
     cursor.close()
-    return render_template('userhome.html', flightInfo = flightInfo)
+    return render_template('searchpurchase.html')
 
+@app.route('/purchaseAuth', methods=['GET', 'POST'])
+def purchaseAuth():
+    email = request.form['customer_email']
+    airline = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    departure_date = request.form['departure_date']
+    flight_class = request.form['class']
+    card_number = request.form['card_number']
+    card_exp = request.form['card_expiration']
+    card_type = request.form['card_type']
+    price = request.form['price']
+    purchase_date = datetime.datetime.today()
+    purchase_date = purchase_date.replace(microsecond=0)
+
+    cursor = conn.cursor()
+    error = None
+
+    query = 'SELECT * FROM flight WHERE %s = airline_name AND %s = departure_date AND %s = number'
+    cursor.execute(query, (airline, departure_date, flight_number))
+    data = cursor.fetchone()
+    if(data):
+        temp_ticket_id = random.randint(0, 100000)
+        check_ticket_num = 'SELECT id FROM ticket WHERE %s = airline_name AND %s = departure_date AND %s = flight_number'
+        cursor.execute(check_ticket_num, (airline, departure_date, flight_number))
+        conn.commit()
+        ticket_exist = cursor.fetchone()
+        while (ticket_exist):
+            temp_ticket_id = random.randint(0, 100000)
+            check_ticket_num = 'SELECT id FROM ticket WHERE %s = airline_name AND %s = departure_date AND %s = flight_number'
+            cursor.execute(check_ticket_num, (airline, departure_date, flight_number))
+            conn.commit()
+            ticket_exist = cursor.fetchone()
+        ticket_id = temp_ticket_id
+        ins = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(ins, (ticket_id, email, departure_date, flight_number, airline, flight_class, price, card_type, card_number, card_exp, purchase_date))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for('searchpurchase'))
+    else:
+        flash('That flight does not exist')
+        return redirect(url_for('searchpurchase'))
+    
+#track user spending
+@app.route('/trackspending')
+def trackspending():
+    return render_template('trackspending.html')
 
 #route for staff home page when logged in
 @app.route('/staffhome')
