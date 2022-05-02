@@ -13,6 +13,20 @@
 	</style>
 	<table>
 		<caption>Your Flights</caption>
+		<th>Flight Number</th>
+		<th>Departure Airport</th>
+		<th>Arrival Airport</th>
+		<th>Departure Date</th>
+		<th>Arrival Date</th>
+	{% for line in flightinfo %}
+		<tr>
+			<td>{{line['number']}}</td>
+			<td>{{line['departure_airport']}}</td>
+			<td>{{line['arrival_airport']}}</td>
+			<td>{{line['departure_date']}}</td>
+			<td>{{line['arrival_date']}}</td>
+		</tr>
+	{% endfor %}
 	</table>
 	<p></p>
 
@@ -21,9 +35,10 @@
 	<a href="/changestatus" >Change a flight status</a>
 	<p></p>
 	<a href="/addairport" >Add new airport</a>
-
 	<p></p>
-	<a href="/logout">Logout</a>
+	<a href="/viewratings" >View flights ratings</a>
+	<p></p>
+	<a href="/stafflogout">Logout</a>
 </body>
 
 </html>

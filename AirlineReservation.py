@@ -267,9 +267,18 @@ def ratecomment():
 @app.route('/staffhome')
 def staffhome():
     username = session['username']
-    #cursor = conn.cursor()
-    #query = 'SELECT '
-    return render_template('staffhome.html')
+    cursor = conn.cursor()
+    getAirline = 'SELECT airline_name FROM staff WHERE username = %s'
+    cursor.execute(getAirline, (username))
+    conn.commit()
+    airline_name = cursor.fetchone()
+    session['airline'] = airline_name['airline_name']
+    airline = session['airline']
+    getFlights = 'SELECT * FROM flight WHERE airline_name = %s AND departure_date > CURRENT_DATE AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 30) AS DateAdd)'
+    cursor.execute(getFlights, (airline))
+    conn.commit()
+    flightinfo = cursor.fetchall()
+    return render_template('staffhome.html', flightinfo=flightinfo)
 
 #staff member create new flight page
 @app.route('/createflight')
@@ -367,11 +376,24 @@ def addairportAuth():
         cursor.close()
         return render_template('staffhome.html')
 
+#staff view flight ratings
+@app.route('/viewratings')
+def viewratings():
+    return render_template('viewratings.html')
+
 #logout
-@app.route('/logout')
-def logout():
+@app.route('/userlogout')
+def userlogout():
     session.pop('username')
     return redirect('/')
+
+#logout
+@app.route('/stafflogout')
+def stafflogout():
+    session.pop('username')
+    session.pop('airline')
+    return redirect('/')
+
 
 app.secret_key = 'some key that you will never guess'
 #Run the app on localhost port 5000

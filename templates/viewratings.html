@@ -1,0 +1,46 @@
+<html>
+<head>
+	<h1>View Ratings and Comments of Flights</h1>
+</head>
+<body>
+
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+<table>
+	<th>Airline</th>
+	<th>Departure</th>
+	<th>Comment</th>
+	<th>Rating</th>
+	<th>Post your own comment</th>
+{% for line in flights %}
+	<tr>
+			<tr>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['departure_date']}}</td>
+				<td>{{line['comment']}}</td>
+				<td>{{line['rating']}}</td>
+				<td>
+					<form id = 'comment' method="POST">
+						<input type="text" name = "comment" placeholder="comment" required/>
+						<input type="number" min="1" max="5" name = "rating" placeholder="rating" required/>
+						<input type="hidden" name="airline_name" value="{{line['airline_name']}}">
+						<input type="hidden" name="departure_date" value="{{line['departure_date']}}">
+						<input type="hidden" name="flight_number" value="{{line['flight_number']}}">
+						<input type="submit" value = Post />
+					</form>
+				</td>
+			</tr>
+	</tr>
+{% endfor %}
+</table>
+
+<a href="/staffhome">Go back</a>
+
+</body>
+
+
+</html>
