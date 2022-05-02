@@ -236,6 +236,33 @@ def purchaseAuth():
 def trackspending():
     return render_template('trackspending.html')
 
+#users rate and comment on previous flights
+@app.route('/ratecomment', methods=['GET', 'POST'])
+def ratecomment():
+    email = session['username']
+    cursor = conn.cursor()
+    getFlight = 'SELECT airline_name, departure_date, flight_number, class, rating, comment FROM ticket NATURAL LEFT OUTER JOIN rating WHERE %s = customer_email AND departure_date < CURRENT_DATE'
+    cursor.execute(getFlight, (email))
+    conn.commit()
+    flights = cursor.fetchall()
+    if request.method == 'POST':
+        #request
+        comment = request.form['comment']
+        rating = request.form['rating']
+        airline_name = request.form['airline_name']
+        departure_date = request.form['departure_date']
+        flight_number = request.form['flight_number']
+        #execute
+        ins = 'INSERT INTO rating VALUES(%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)'
+        cursor.execute(ins, (comment, rating, airline_name, departure_date, flight_number))
+        #commit
+        conn.commit()
+        #close
+        cursor.close()
+        return redirect(url_for('ratecomment'))
+    cursor.close()
+    return render_template('ratecomment.html', flights=flights)
+
 #route for staff home page when logged in
 @app.route('/staffhome')
 def staffhome():
