@@ -6,6 +6,43 @@
 </head>
 
 <body>
+	<h4>Search for Flights</h4>
+<form id="search" method="POST"> 
+	<input type="search" name="q" placeholder="Search Flights">
+	<button type="Submit">Search</button>
+</form>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+<table>
+	<caption>Search Results</caption>
+	<th>Airline</th>
+	<th>Flight Number</th>
+	<th>Departure Airport</th>
+	<th>Arrival Airport</th>
+	<th>Departure Date</th>
+	<th>Arrival Date</th>
+	<th>Price</th>
+
+{% for line in data %}
+	<tr>
+		<td>{{line['airline_name']}}</td>
+		<td>{{line['number']}}</td>
+		<td>{{line['departure_airport']}}</td>
+		<td>{{line['arrival_airport']}}</td>
+		<td>{{line['departure_date']}}</td>
+		<td>{{line['arrival_date']}}</td>
+		<td>{{line['base_price']}}</td>
+	</tr>
+		
+</br>
+{% endfor %}
+</table>
+
+<p></p>
 {% if not message %}
 	<a href="/userlogin">User Login</a>
 	<p></p>

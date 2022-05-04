@@ -16,8 +16,16 @@ conn = pymysql.connect(host='localhost',
                        cursorclass=pymysql.cursors.DictCursor)
 
 #Define route for home page when not logged in
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    if request.method == 'POST':
+        cursor = conn.cursor()
+        flight = request.form['q']
+        search = 'SELECT * FROM flight WHERE (departure_airport = %s OR arrival_airport = %s OR CAST(departure_date AS DATE) = %s OR CAST(arrival_date AS DATE) = %s) AND departure_date > CURRENT_DATE'
+        cursor.execute(search, (flight, flight, flight, flight))
+        conn.commit()
+        data = cursor.fetchall()
+        return render_template('home.html', data=data)
     return render_template('home.html')
 
 #Define route for user login
@@ -181,8 +189,8 @@ def searchpurchase():
     cursor = conn.cursor()
     if request.method == "POST":
         flight = request.form['q']
-        search = 'SELECT * FROM flight WHERE departure_airport = %s OR arrival_airport = %s'
-        cursor.execute(search, (flight, flight))
+        search = 'SELECT * FROM flight WHERE (departure_airport = %s OR arrival_airport = %s OR CAST(departure_date AS DATE) = %s OR CAST(arrival_date AS DATE) = %s) AND departure_date > CURRENT_DATE'
+        cursor.execute(search, (flight, flight, flight, flight))
         conn.commit()
         data = cursor.fetchall()
         return render_template('searchpurchase.html', data=data)
