@@ -1,0 +1,41 @@
+<html>
+<head>
+    <h1>View Customer Top Destinations</h1>
+</head>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+<label>Top 3 Destinations of the Past 3 Months</label>
+<table>
+    <th>Destination</th>
+    <th>Tickets Sold</th>
+{%for line in threemonthtop %}
+    <tr>
+        <td>{{line['arrival_airport']}}</td>
+        <td>{{line['top']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<p></p>
+<label>Top 3 Destinations of the Past Year</label>
+<table>
+    <th>Destination</th>
+    <th>Tickets Sold</th>
+{%for line in yearlytop %}
+    <tr>
+        <td>{{line['arrival_airport']}}</td>
+        <td>{{line['top']}}</td>
+    </tr>
+{% endfor %}
+</table>
+<p></p>
+<a href="/staffhome">Go back</a>
+
+</body>
+
+
+</html>

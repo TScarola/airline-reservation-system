@@ -387,7 +387,70 @@ def addairportAuth():
 #staff view flight ratings
 @app.route('/viewratings')
 def viewratings():
-    return render_template('viewratings.html')
+    airline = session['airline']
+    cursor = conn.cursor()
+    getRatings = 'SELECT DISTINCT AVG(rating) AS rating, departure_date, flight_number FROM rating WHERE airline_name = %s GROUP BY departure_date, flight_number'
+    cursor.execute(getRatings, (airline))
+    conn.commit()
+    flights = cursor.fetchall()
+    getComments = 'SELECT rating, comment, departure_date, flight_number FROM rating WHERE airline_name = %s'
+    cursor.execute(getComments, (airline))
+    conn.commit()
+    comments = cursor.fetchall()
+    cursor.close()
+    return render_template('viewratings.html', flights=flights, comments=comments)
+
+#staff can view frequent customers for their airline
+@app.route('/viewcustomers')
+def viewcustomers():
+    airline = session['airline']
+    cursor = conn.cursor()
+    query = 'SELECT COUNT(customer_email) AS count, customer_email FROM ticket WHERE airline_name = %s AND departure_date > (SELECT SUBDATE(departure_date, 365)) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1)) GROUP BY customer_email'
+    cursor.execute(query, (airline))
+    conn.commit()
+    customercount = cursor.fetchall()
+    dist = 'SELECT DISTINCT * FROM ticket WHERE airline_name = %s'
+    cursor.execute(dist, (airline))
+    conn.commit()
+    distinctflight = cursor.fetchall()
+    cursor.close()
+    return render_template('viewcustomers.html', customercount=customercount, distinctflight=distinctflight)
+
+#staff can view revenue by month, year, or class
+@app.route('/viewrevenue')
+def viewrevenue():
+    airline = session['airline']
+    cursor = conn.cursor()
+    monthly = 'SELECT SUM(sold_price) as revenue FROM ticket WHERE airline_name = %s AND departure_date > (SELECT SUBDATE(departure_date, 31) as DATESUB) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1) as DATEADD)'
+    cursor.execute(monthly, (airline))
+    conn.commit()
+    monthlyrev = cursor.fetchone()
+    yearly = 'SELECT SUM(sold_price) as revenue FROM ticket WHERE airline_name = %s AND departure_date > (SELECT SUBDATE(departure_date, 365) as DATESUB) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1) as DATEADD)'
+    cursor.execute(yearly, (airline))
+    conn.commit()
+    yearlyrev = cursor.fetchone()
+    byclass = 'SELECT SUM(sold_price) as revenue, class FROM ticket WHERE airline_name = %s AND departure_date <= CURRENT_DATE GROUP BY class'
+    cursor.execute(byclass, (airline))
+    conn.commit()
+    byclassrev = cursor.fetchall()    
+    cursor.close()
+    return render_template('viewrevenue.html', monthlyrev=monthlyrev, yearlyrev=yearlyrev, byclassrev=byclassrev)
+
+#staff can view the top visited destinations in the past 3 months or year
+@app.route('/topdestinations')
+def topdestinations():
+    airline = session['airline']
+    cursor = conn.cursor()    
+    yearly = 'SELECT COUNT(arrival_airport) as top, arrival_airport FROM ticket NATURAL JOIN flight WHERE airline_name = %s AND departure_date > (SELECT SUBDATE(departure_date, 365) as DATESUB) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1) as DATEADD) GROUP BY arrival_airport ORDER BY top DESC'
+    cursor.execute(yearly, (airline))
+    conn.commit()
+    yearlytop = cursor.fetchmany(size=3)
+    threemonth = 'SELECT COUNT(arrival_airport) as top, arrival_airport FROM ticket NATURAL JOIN flight WHERE airline_name = %s AND departure_date > (SELECT SUBDATE(departure_date, 90) as DATESUB) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1) as DATEADD) GROUP BY arrival_airport ORDER BY top DESC'
+    cursor.execute(threemonth, (airline))
+    conn.commit()
+    threemonthtop = cursor.fetchmany(size=3)
+    cursor.close()
+    return render_template('topdestinations.html', yearlytop=yearlytop, threemonthtop=threemonthtop)
 
 #logout
 @app.route('/userlogout')

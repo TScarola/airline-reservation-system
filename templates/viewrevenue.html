@@ -1,0 +1,35 @@
+<html>
+<head>
+    <h1>View Earned Revenue</h1>
+</head>
+<body>
+<label>Monthly Revenue = </label>
+${{monthlyrev['revenue']}}</br>
+<label>Yearly Revenue = </label>
+${{yearlyrev['revenue']}}
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+<p></p>
+<label>Revenue By Class</label>
+<table>
+    <th>Class</th>
+    <th>Revenue</th>
+{% for line in byclassrev %}
+        <tr>
+            <td>{{line['class']}}</td>
+            <td>${{line['revenue']}}</td>
+        </tr>
+{% endfor %}
+</table>
+
+<p></p>
+<a href="/staffhome">Go back</a>
+
+</body>
+
+
+</html>
