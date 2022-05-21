@@ -1,0 +1,26 @@
+<html>
+<head>
+</head>
+<body>
+	<h1>Add a New Airplane</h1>
+<form action="/addairplaneAuth" method="POST">
+	<input type="text" name = "name" placeholder="airline name" required/></br>
+	<input type="number" name = "id" placeholder="plane id" required/></br>
+	<input type="number" name = "num_seats" placeholder="number of seats" required/></br>
+	<input type="text" name = "manufacturer" placeholder="manufacturer" required/></br>
+	<input type="number" name = "age" placeholder="plane age" required/></br>
+
+	<p></p>
+	<input type="submit" value = Create />
+	<input type="reset">
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+</form>
+
+<a href="/staffhome">Go back</a>
+
+</body>
+
+
+</html>

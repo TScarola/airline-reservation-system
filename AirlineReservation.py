@@ -242,7 +242,14 @@ def purchaseAuth():
 #track user spending
 @app.route('/trackspending')
 def trackspending():
-    return render_template('trackspending.html')
+    email = session['username']
+    cursor = conn.cursor()
+    yearly = 'SELECT SUM(sold_price) as spent FROM ticket WHERE customer_email = %s AND departure_date > (SELECT SUBDATE(departure_date, 365) as DATESUB) AND departure_date < (SELECT ADDDATE(CURRENT_DATE, 1) as DATEADD)'
+    cursor.execute(yearly, (email))
+    conn.commit()
+    yearlyspent = cursor.fetchone()
+    cursor.close()
+    return render_template('trackspending.html', yearlyspent=yearlyspent)
 
 #users rate and comment on previous flights
 @app.route('/ratecomment', methods=['GET', 'POST'])
@@ -354,6 +361,34 @@ def changestatusAuth():
         error = 'This flight is not in the system'
         return render_template('changestatus.html', error=error)
 
+#staff member adds new airplane 
+@app.route('/addairplane')
+def addairplane():
+    return render_template('addairplane.html')
+
+@app.route('/addairplaneAuth', methods=['GET', 'POST'])
+def addairplaneAuth():
+    name = request.form['name']
+    plane_id = request.form['id']
+    seats = request.form['num_seats']
+    manufacturer = request.form['manufacturer']
+    age = request.form['age']
+    #sql
+    cursor = conn.cursor()
+    query = 'SELECT airline_name, id FROM airplane WHERE airline_name = %s AND id = %s'
+    cursor.execute(query, (name, plane_id))
+    data = cursor.fetchone()
+    error = None
+    if (data):
+        error = 'This airplane already exists'
+        return render_template('addairplane.html', error=error)
+    else:
+        ins = 'INSERT INTO airplane VALUES(%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (name, plane_id, seats, manufacturer, age))
+        conn.commit()
+        cursor.close()
+        return render_template('staffhome.html')
+
 #staff member add new airport page
 @app.route('/addairport')
 def addairport():
@@ -417,7 +452,7 @@ def viewcustomers():
     return render_template('viewcustomers.html', customercount=customercount, distinctflight=distinctflight)
 
 #staff can view revenue by month, year, or class
-@app.route('/viewrevenue')
+@app.route('/viewrevenue', methods=['GET', 'POST'])
 def viewrevenue():
     airline = session['airline']
     cursor = conn.cursor()
